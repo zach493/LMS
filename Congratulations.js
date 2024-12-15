@@ -1,106 +1,166 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  Image 
+  TextInput, 
+  KeyboardAvoidingView, 
+  Platform, 
+  Keyboard,
+  TouchableWithoutFeedback
 } from 'react-native';
-import Slider from '@react-native-community/slider';
 import { useNavigation } from '@react-navigation/native';
 
-
 const Congratulations = () => {
-  const navigation = useNavigation(); 
-  const [value, setValue] = useState(2000);
+  const navigation = useNavigation();  
+  const [value, setValue] = useState('2000');
+  const [warning, setWarning] = useState('');
+  const [keyboardVisible, setKeyboardVisible] = useState(false); 
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => setKeyboardVisible(true) 
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => setKeyboardVisible(false) 
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
+  const handleValueChange = (text) => {
+    const numericValue = parseInt(text);
+    if (numericValue > 2000) {
+      setWarning('The value cannot exceed PHP 2,000.');
+    } else {
+      setWarning('');
+    }
+
+    setValue(text);
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Congratulations</Text>
-      <Text style={styles.subText}>
-        Only take what you need, you can always draw more as long as you repay on time.
-      </Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.innerContainer}>
+        <View style={styles.textContainer}>
+            <Text style={styles.header}>Congratulations</Text>
+            <Text style={styles.subText}>
+              Only take what you need, you can always draw more as long as you repay on time.
+            </Text>
+          </View>
 
-      <Text style={styles.currency}>PHP</Text>
-      <Text style={styles.amount}>{value.toLocaleString()}</Text>
+          <View style={styles.amountContainer}>
+            <Text style={styles.currency}>PHP</Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={value}
+              onChangeText={handleValueChange}
+            />
+          </View>
 
-      <View style={styles.sliderContainer}>
-        <Text style={styles.rangeText}>PHP 1,000</Text>
-        <Slider
-          style={styles.slider}
-          minimumValue={1000}
-          maximumValue={2000}
-          step={100}
-          value={value}
-          onValueChange={(val) => setValue(val)}
-          minimumTrackTintColor="#FF6F00"
-          maximumTrackTintColor="#D3D3D3"
-          thumbImage={require('./images/new-moon.png')}
-        />
-        <Text style={styles.rangeText}>PHP 2,000</Text>
-      </View>
+          {warning ? (
+            <Text 
+              style={[
+                styles.warningText, 
+                { marginTop: keyboardVisible ? -120 : -190 } 
+              ]}
+            >
+              {warning}
+            </Text>
+          ) : null}
 
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Approved')}>
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity style={styles.button} onPress={() => console.log('Approved')}>
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    padding: 20,
-    justifyContent: 'center',
+    backgroundColor: '#FAF9F6',
+  },
+  textContainer: {
+    marginTop: 100,
+    marginBottom: -20, 
+  },
+  innerContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   header: {
-    fontSize: 24,
+    marginTop: 50,
+    fontSize: 30,
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'left',
     marginBottom: 10,
   },
   subText: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#606060',
-    marginBottom: 30,
-  },
-  currency: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  amount: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    lineHeight: 20,
     marginBottom: 20,
   },
-  sliderContainer: {
+  amountContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 30,
+    justifyContent: 'center',
+    marginBottom: 50,
   },
-  rangeText: {
-    fontSize: 14,
+  currency: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginRight: 5,
     color: '#606060',
   },
-  slider: {
-    flex: 1,
+  input: {
+    borderWidth: 1,
+    borderColor: '#D3D3D3',
+    borderRadius: 8,
+    fontSize: 24,
+    paddingHorizontal: 10,
     height: 40,
-    marginHorizontal: 10,
+    width: 200,
+    textAlign: 'center',
+  },
+  warningText: {
+    marginLeft: 30,
+    color: 'red',
+    fontSize: 14,
+    textAlign: 'center',
   },
   button: {
-    backgroundColor: '#FF6F00',
-    borderRadius: 8,
-    paddingVertical: 12,
+    marginBottom: 20,
+    backgroundColor: '#FF7A00',
+    padding: 10,
+    borderRadius: 30,
     alignItems: 'center',
-    marginTop: 20,
+    elevation: 5, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    width: 320,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
   },

@@ -6,8 +6,11 @@ import {
   Image, 
   TouchableOpacity 
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const Approved = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Text style={styles.approvedText}>You're approved</Text>
@@ -25,7 +28,7 @@ const Approved = () => {
         style={styles.image}
       />
 
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Continue pressed')}>
+      <TouchableOpacity style={styles.button} onPress={() => console.log('Refresh')}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
     </View>
