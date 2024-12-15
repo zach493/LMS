@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'; 
 import { useNavigation } from '@react-navigation/native';
 
 const Agreement = () => {
@@ -15,39 +15,41 @@ const Agreement = () => {
         that the information you share is confidential.
       </Text>
 
-      <View style={styles.infoContainer}>
-        <View style={styles.infoItem}>
-          <Image source={require('./images/outgoing-call.png')} style={styles.icon} />
-          <Text style={styles.infoText}>
-            <Text style={styles.infoTitle}>Call Data{'\n'}</Text>
-            Used to securely link your account to your device and prevent fraud.
-          </Text>
-        </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoItem}>
+            <Image source={require('./images/outgoing-call.png')} style={styles.icon} />
+            <Text style={styles.infoText}>
+              <Text style={styles.infoTitle}>Call Data{'\n'}</Text>
+              Used to securely link your account to your device and prevent fraud.
+            </Text>
+          </View>
 
-        <View style={styles.infoItem}>
-          <Image source={require('./images/communication.png')} style={styles.icon} />
-          <Text style={styles.infoText}>
-            <Text style={styles.infoTitle}>SMS Data{'\n'}</Text>
-            Used to assess financial activity and determine eligibility for our services.
-          </Text>
-        </View>
+          <View style={styles.infoItem}>
+            <Image source={require('./images/communication.png')} style={styles.icon} />
+            <Text style={styles.infoText}>
+              <Text style={styles.infoTitle}>SMS Data{'\n'}</Text>
+              Used to assess financial activity and determine eligibility for our services.
+            </Text>
+          </View>
 
-        <View style={styles.infoItem}>
-          <Image source={require('./images/contact.png')} style={styles.icon} />
-          <Text style={styles.infoText}>
-            <Text style={styles.infoTitle}>Contacts{'\n'}</Text>
-            Used to prevent fraud and determine eligibility for our services. Loan Management System will never contact friends and family.
-          </Text>
-        </View>
+          <View style={styles.infoItem}>
+            <Image source={require('./images/contact.png')} style={styles.icon} />
+            <Text style={styles.infoText}>
+              <Text style={styles.infoTitle}>Contacts{'\n'}</Text>
+              Used to prevent fraud and determine eligibility for our services. Loan Management System will never contact friends and family.
+            </Text>
+          </View>
 
-        <View style={styles.infoItem}>
-          <Image source={require('./images/placeholder.png')} style={styles.icon} />
-          <Text style={styles.infoText}>
-            <Text style={styles.infoTitle}>Location{'\n'}</Text>
-            Used to verify your address for compliance and provide personalized loan offers.
-          </Text>
+          <View style={styles.infoItem}>
+            <Image source={require('./images/placeholder.png')} style={styles.icon} />
+            <Text style={styles.infoText}>
+              <Text style={styles.infoTitle}>Location{'\n'}</Text>
+              Used to verify your address for compliance and provide personalized loan offers.
+            </Text>
+          </View>
         </View>
-      </View>
+      </ScrollView>
 
       <Text style={styles.footerText}>
         By tapping "Start My Application" you consent to sharing this information and accept the terms of our Privacy Policy.
@@ -77,8 +79,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-  marginTop: 30,
-    fontSize: 25,
+    marginTop: 30,
+    fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 10,
@@ -98,15 +100,17 @@ const styles = StyleSheet.create({
     marginTop: 15,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom:20,
+    marginBottom: 20,
   },
   icon: {
+    marginTop: 10,
     width: 40,
     height: 40,
     marginLeft: 20,
     marginRight: 10,
   },
   infoText: {
+    marginTop: -5,
     flex: 1,
     fontSize: 14,
     color: '#333',
@@ -120,7 +124,8 @@ const styles = StyleSheet.create({
   },
   footerText: {
     backgroundColor: '#F5F1E7',
-    marginTop: -80,
+    paddingTop: 15,
+    paddingBottom: 15,
     fontSize: 15,
     color: '#666',
     textAlign: 'center',
@@ -132,7 +137,6 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: 'center',
     marginBottom: 10,
-    marginTop: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,

@@ -27,21 +27,27 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 100,
-    marginBottom: 10,
+    marginBottom: 20,
   },
 
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 30,
   },
   button: {
+    marginTop: 20,
     backgroundColor: '#333',
     paddingVertical: 10,
     paddingHorizontal: 40,
     borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
+  
   buttonText: {
     color: '#fff',
     fontSize: 18,

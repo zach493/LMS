@@ -49,7 +49,7 @@ const Panel = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAF9F6',
     padding: 20,
   },
   header: {
@@ -57,16 +57,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#F5B301',
     marginBottom: 20,
-    marginTop: 15,
+    marginTop: 25,
   },
   topSection: {
     marginTop: -10,
-    backgroundColor: '#ffcc00',
-    height: 100,
+    backgroundColor: '#F5B301',
+    height: 140,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    borderRadius: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -74,12 +73,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   topIcon: {
-    width: 90,
-    height: 60,
+    width: 80,
+    height: 70,
   },
   card: {
+    borderRadius: 5,
     backgroundColor: '#fff',
-    borderRadius: 10,
     marginBottom: 20,
     padding: 15,
     shadowColor: '#000',

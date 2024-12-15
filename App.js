@@ -7,7 +7,8 @@ import RegisterScreen from './RegisterScreen';
 import Agreement from './Agreement';
 import Panel from './Panel';
 import Personal from './Personal';
-import Information from './Information';
+import Application from './Application';
+
 
 const Stack = createStackNavigator();
 
@@ -21,7 +22,7 @@ export default function App() {
         <Stack.Screen name="Agreement" component={Agreement} />
         <Stack.Screen name="Panel" component={Panel} />
         <Stack.Screen name="Personal" component={Personal} />
-        <Stack.Screen name="Information" component={Information} />
+        <Stack.Screen name="Application" component={Application} />
       </Stack.Navigator>
     </NavigationContainer>
   );

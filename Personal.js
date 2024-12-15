@@ -10,7 +10,7 @@ const Personal = () => {
         <Text style={styles.subtitle}>We want to get to know you</Text>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Information')}
+          onPress={() => navigation.navigate('Application')}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
