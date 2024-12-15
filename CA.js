@@ -7,11 +7,12 @@ const Personal = () => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Personal {'\n'}Information</Text>
-        <Text style={styles.subtitle}>We want to get to know you</Text>
+        <Text style={styles.title}>Your Application</Text>
+        <Text style={styles.subtitle}>Welcome, let’s get started on your{'\n'}
+        application!</Text>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Application')}
+          onPress={() => navigation.navigate('Use')}
         >
           <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>

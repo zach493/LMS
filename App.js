@@ -8,7 +8,19 @@ import Agreement from './Agreement';
 import Panel from './Panel';
 import Personal from './Personal';
 import Application from './Application';
-
+import CF from './CF';
+import ReviewForm from './ReviewForm';
+import CA from './CA';
+import Use from './Use';
+import ReviewUse from './ReviewUse';
+import Congratulations from './Congratulations';
+import Approved from './Approved';
+import Refresh from './Refresh';
+import LoanAgreement from './LoanAgreement';
+import Repayment from './Repayment';
+import BorrowedSummary from './BorrowedSummary';
+import Choose from './Choose';
+import Gcash from './Gcash';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +35,19 @@ export default function App() {
         <Stack.Screen name="Panel" component={Panel} />
         <Stack.Screen name="Personal" component={Personal} />
         <Stack.Screen name="Application" component={Application} />
+        <Stack.Screen name="CF" component={CF} />
+        <Stack.Screen name="ReviewForm" component={ReviewForm} />
+        <Stack.Screen name="CA" component={CA} />
+        <Stack.Screen name="Use" component={Use} />
+        <Stack.Screen name="ReviewUse" component={ReviewUse} />
+        <Stack.Screen name="Congratulations" component={Congratulations} />
+        <Stack.Screen name="Approved" component={Approved} />
+        <Stack.Screen name="Refresh" component={Refresh} />
+        <Stack.Screen name="LoanAgreement" component={LoanAgreement} />
+        <Stack.Screen name="Repayment" component={Repayment} />
+        <Stack.Screen name="BorrowedSummary" component={BorrowedSummary} />
+        <Stack.Screen name="Choose" component={Choose} />
+        <Stack.Screen name="Gcash" component={Gcash} />
       </Stack.Navigator>
     </NavigationContainer>
   );

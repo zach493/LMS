@@ -3,7 +3,7 @@ import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity } from 'reac
 import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
-  const navigation = useNavigation(); // Get the navigation prop
+  const navigation = useNavigation(); 
 
   return (
     <View style={styles.container}>
@@ -39,7 +39,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAF9F6',
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,
