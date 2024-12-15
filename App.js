@@ -20,7 +20,9 @@ import LoanAgreement from './LoanAgreement';
 import Repayment from './Repayment';
 import BorrowedSummary from './BorrowedSummary';
 import Choose from './Choose';
+import History from './History';
 import Gcash from './Gcash';
+import Money from './Money';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +50,8 @@ export default function App() {
         <Stack.Screen name="BorrowedSummary" component={BorrowedSummary} />
         <Stack.Screen name="Choose" component={Choose} />
         <Stack.Screen name="Gcash" component={Gcash} />
+        <Stack.Screen name="History" component={History} />
+        <Stack.Screen name="Money" component={Money} />
       </Stack.Navigator>
     </NavigationContainer>
   );

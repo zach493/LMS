@@ -28,8 +28,10 @@ const Approved = () => {
         style={styles.image}
       />
 
-      <TouchableOpacity style={styles.button} onPress={() => console.log('Refresh')}>
-        <Text style={styles.buttonText}>Continue</Text>
+      <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('Refresh')}>
+          <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
     </View>
   );
@@ -38,7 +40,7 @@ const Approved = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FAF9F6',
     padding: 20,
     justifyContent: 'center',
   },
@@ -53,8 +55,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    color: '#F5B301',
   },
   infoContainer: {
+    marginLeft: 10,
+    marginTop: 10,
     marginBottom: 30,
   },
   infoText: {
@@ -63,25 +68,33 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   bullet: {
+    lineHeight: 30,
     fontSize: 14,
     color: '#606060',
     marginBottom: 5,
   },
   image: {
-    width: 150,
-    height: 150,
+    width: 200,
+    height: 200,
     alignSelf: 'center',
-    marginBottom: 20,
+    marginTop: 40,
+    marginBottom: 60,
   },
   button: {
-    backgroundColor: '#FF6F00',
-    borderRadius: 8,
-    paddingVertical: 12,
+    marginBottom: -70,
+    backgroundColor: '#FF7A00',
+    padding: 10,
+    borderRadius: 30,
     alignItems: 'center',
-    marginTop: 10,
+    elevation: 5, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    width: 320,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
   },

@@ -1,66 +1,87 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'; 
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Personal = () => {
-  const navigation = useNavigation();
+export default function Choose() {
+  
+  const navigation = useNavigation(); 
+
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Choose</Text>
-        <Text style={styles.subtitle}>We want to get to know you</Text>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Gcash')}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.title}>Choose where to claim your PHP 2,000 loan</Text>
+
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('Gcash')}
+      >
+        <View style={styles.row}>
+          <View>
+            <Text style={styles.boldText}>Gcash (Instapay)</Text>
+            <Text style={styles.label}>
+              Processing Time: <Text style={styles.value}>Instant</Text>
+            </Text>
+            <Text style={styles.label}>
+              Service fee: <Text style={styles.value}>PHP 15</Text>
+            </Text>
+            <Text style={styles.label}>
+              You'll receive: <Text style={styles.value}>PHP 1,985</Text>
+            </Text>
+          </View>
+          <Image
+            source={require('./images/GCash.png')} 
+            style={styles.icon}
+          />
+        </View>
+      </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5B301',
-    justifyContent: 'center',
-    alignItems: 'left',
-    padding: 20,
-  },
-  content: {
-    alignItems: 'flex-start',
+    backgroundColor: '#FDF9F6',
+    padding: 16,
   },
   title: {
-    fontSize: 28,
+    marginTop: 25,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 10,
-    marginLeft: 20,
+    marginBottom: 16,
+    color: '#333',
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#000',
-    marginBottom: 20,
-    marginLeft: 20,
-  },
-  button: {
+  card: {
     backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 25,
+    padding: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
     shadowRadius: 3,
-    elevation: 5,
-    marginLeft: 20,
+    elevation: 2,
   },
-  buttonText: {
-    color: '#fcb900',
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  boldText: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#000',
+  },
+  label: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 4,
+  },
+  value: {
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  icon: {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
   },
 });
-
-export default Personal;

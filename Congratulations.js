@@ -80,8 +80,10 @@ const Congratulations = () => {
             </Text>
           ) : null}
 
-          <TouchableOpacity style={styles.button} onPress={() => console.log('Approved')}>
-            <Text style={styles.buttonText}>Continue</Text>
+          <TouchableOpacity 
+                style={styles.button} 
+                onPress={() => navigation.navigate('Approved')}>
+              <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>

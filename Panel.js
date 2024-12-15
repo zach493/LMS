@@ -13,44 +13,126 @@ const Panel = () => {
         <Image source={require('./images/Loan_Logo_hand.png')} style={styles.topIcon} />
       </View>
 
+      
       <View style={styles.card}>
-        <View style={styles.cardContent}>
+          <View style={styles.cardContent}>
+              <View>
+                  <Text style={styles.cardTitle}>Borrow your way</Text>
+                  <Text style={styles.cardDescription}>
+                      Apply once and get continuous {'\n'}access to cash.
+                  </Text>
+              </View>
+              <Image source={require('./images/job-seeker.png')} style={styles.card1} />
+          </View>
+
+          <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('Personal')}
+          >
+              <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
+      </View>
+     
+
+{/* 
+      <View style={styles.row}>
           <View>
-            <Text style={styles.cardTitle}>Borrow your way</Text>
-            <Text style={styles.cardDescription}>
-              Apply once and get continuous {'\n'}access to cash.
+              <Text style={styles.boldText}>To pay on January 26, 2025</Text>
+            <Text style={styles.label}>
+              Total Service Fee: <Text style={styles.value}>26.2% (PHP 393.00)</Text>
+            </Text>
+            <Text style={styles.label}>
+              Repayment Date: <Text style={styles.value}>January 26, 2025</Text>
             </Text>
           </View>
-          <Image source={require('./images/job-seeker.png')} style={styles.card1} />
-        </View>
+
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Personal')}
+          onPress={() => navigation.navigate('Repayment')}
         >
-          <Text style={styles.buttonText}>Continue</Text>
+          <Text style={styles.buttonText}>Make a Payment</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.card}>
         <View style={styles.cardContent}>
           <View>
-            <Text style={styles.cardTitle}>Want to know about us?</Text>
+            <Text style={styles.cardTitle}>View borrowing history</Text>
+            <Text style={styles.cardDescription}>
+              Track progress and get growth tips
+            </Text>
           </View>
-          <Image source={require('./images/about-us.png')} style={styles.card2} />
+          <Image source={require('./images/history.png')} style={styles.card3} />
         </View>
-        <TouchableOpacity>
-          <Text style={styles.linkText}>View here</Text>
-        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('History')}>
+        <Text style={styles.linkText}>Get started</Text>
+      </TouchableOpacity>
       </View>
+ 
+      <View style={styles.card}>
+        <View style={styles.cardContent}>
+          <View>
+            <Text style={styles.cardTitle}>Borrow anytime after you repay</Text>
+          </View>
+          <Image source={require('./images/invest.png')} style={styles.card2} />
+        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Money')}>
+        <Text style={styles.linkText}>View my LMS limit</Text>
+      </TouchableOpacity>*
+      </View>
+      */}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAF9F6',
     padding: 20,
+  },
+  card: {
+    backgroundColor: '#fff',
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  /*
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 60,
+  },
+  boldText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    color: '#000',
+  },
+  label: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  value: {
+    color: '#333',
+    fontWeight: '400',
+    color: '#FF6600',
+    fontSize: 14,
+  }
+*/
+
+  linkText: {
+    fontSize: 16,
+    color: '#007AFF',
+    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+    marginTop: 16,
   },
   header: {
     fontSize: 24,
@@ -107,6 +189,13 @@ const styles = StyleSheet.create({
     top: 10,
     alignSelf: 'center',
   },
+  card3: {
+    width: 70,
+    height: 70,
+    marginRight: 10,
+    top: 10,
+    alignSelf: 'center',
+  },
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -118,13 +207,28 @@ const styles = StyleSheet.create({
     marginTop: 5,
     lineHeight: 22,
   },
-  button: {
+ /* button: {
+    marginTop: 20,
     backgroundColor: '#FF6600',
     width: 140,
-    height: 40,
+    height: 35,
     borderRadius: 25,
     alignItems: 'center',
-    marginTop: 5,
+    top: 60,
+    left: -270,
+    width: 320,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },*/
+  button: {
+    backgroundColor: '#FF6600',
+    height: 35,
+    width: 120, 
+    borderRadius: 25,
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
