@@ -1,20 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
   Image, 
-  TouchableOpacity 
+  TouchableOpacity, 
+  Alert 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const Approved = () => {
   const navigation = useNavigation();
+  const [moneyReceived, setMoneyReceived] = useState(null); // Correct state variable name
+
+  useEffect(() => {
+    const fetchMoneyReceived = async () => {
+      try {
+        // Get authentication token from AsyncStorage
+        const authToken = await AsyncStorage.getItem('authToken');
+        if (!authToken) {
+          Alert.alert('Error', 'You must be logged in to view this information');
+          return;
+        }
+
+        console.log('Auth Token:', authToken); // Debug token
+
+        // Make the API call to fetch the money received
+        const response = await axios.get(
+          'https://lmsdb-lmserver.up.railway.app/borrowmoneyrec', 
+          { params: { token: authToken } }
+        );
+
+        console.log('API Response:', response.data); // Debug API response
+
+        if (response.status === 200) {
+          setMoneyReceived(response.data.moneyrecieved || 0); // Update money received
+        } else {
+          Alert.alert('Error', 'Failed to retrieve the amount');
+        }
+      } catch (error) {
+        console.error('Error fetching money:', error);
+        Alert.alert('Error', 'Something went wrong while fetching data');
+      }
+    };
+
+    fetchMoneyReceived(); // Trigger the data fetch
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.approvedText}>You're approved</Text>
-      <Text style={styles.amount}>PHP 2,000</Text>
+      <Text style={styles.amount}>
+        PHP {moneyReceived !== null ? moneyReceived : 'Loading...'} {/* Correct state usage */}
+      </Text>
 
       <View style={styles.infoContainer}>
         <Text style={styles.infoText}>LMS credit line:</Text>
@@ -29,9 +69,9 @@ const Approved = () => {
       />
 
       <TouchableOpacity 
-          style={styles.button} 
-          onPress={() => navigation.navigate('Refresh')}>
-          <Text style={styles.buttonText}>Continue</Text>
+        style={styles.button} 
+        onPress={() => navigation.navigate('Refresh')}>
+        <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
     </View>
   );

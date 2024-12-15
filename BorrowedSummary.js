@@ -1,17 +1,79 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function BorrowedSummary() {
+  const route = useRoute();
+  const { selectedDay } = route.params || {}; // Ensure we use selectedDay from route params
   const navigation = useNavigation();
   const [isChecked, setIsChecked] = useState(false);
+  const [repaymentDate, setRepaymentDate] = useState('');
+  const [borrowedAmount, setBorrowedAmount] = useState(0);
+  const [processingFee, setProcessingFee] = useState(0);
+  const [serviceFee, setServiceFee] = useState(0);
+  const [totalPayment, setTotalPayment] = useState(0); 
 
   const toggleCheckbox = () => setIsChecked(!isChecked);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const authToken = await AsyncStorage.getItem('authToken');
+
+        if (!authToken) {
+          Alert.alert('Error', 'You must be logged in to view this information');
+          return;
+        }
+
+        const response = await axios.get(
+          'https://lmsdb-lmserver.up.railway.app/borrowmoneyinfo',
+          { params: { token: authToken } }
+        );
+
+        if (response.status === 200) {
+          const moneyReceived = parseFloat(response.data.moneyrecieved) || 0;
+          setBorrowedAmount(moneyReceived);
+
+          // Calculate processing and service fees using selectedDay from route params
+          const processing = moneyReceived * 0.0399;
+          const service = moneyReceived * 0.0043 * (selectedDay ? parseInt(selectedDay) : 15); // Use selectedDay passed via route params
+          const total = moneyReceived + processing + service;
+
+          setProcessingFee(processing);
+          setServiceFee(service);
+
+          // Ensure totalPayment is a valid number
+          if (!isNaN(total)) {
+            setTotalPayment(total);
+          } else {
+            setTotalPayment(0);
+          }
+
+          // Calculate repayment date based on selectedDay
+          const today = new Date();
+          today.setDate(today.getDate() + (selectedDay ? parseInt(selectedDay) : 15)); // Use selectedDay passed via route params
+          setRepaymentDate(today.toLocaleDateString());
+        } else {
+          Alert.alert('Error', 'Failed to retrieve the borrowed information');
+        }
+      } catch (error) {
+        console.error('Error fetching borrowed data:', error);
+        Alert.alert('Error', 'Something went wrong while fetching data');
+      }
+    };
+
+    fetchData();
+  }, [selectedDay]); // Re-run the effect if selectedDay changes
+
+  const totalPaymentFormatted = totalPayment && !isNaN(totalPayment) ? totalPayment.toFixed(2) : '0.00';
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image source={require('./images/left-arrow.png')} style={styles.icon} />
         </TouchableOpacity>
         <Text style={styles.title}>Borrowed Summary</Text>
@@ -23,23 +85,23 @@ export default function BorrowedSummary() {
         <View style={styles.summaryBox}>
           <View style={styles.row}>
             <Text style={styles.label}>Repayment date</Text>
-            <Text style={styles.value}>12/16/2024</Text>
+            <Text style={styles.value}>{repaymentDate}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Borrowed Amount</Text>
-            <Text style={styles.value}>PHP 2,000</Text>
+            <Text style={styles.value}>PHP {borrowedAmount.toLocaleString()}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>One-time Processing Fee</Text>
-            <Text style={styles.value}>PHP 79</Text>
+            <Text style={styles.value}>PHP {processingFee.toFixed(2)}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Service Fee</Text>
-            <Text style={styles.value}>PHP 524</Text>
+            <Text style={styles.value}>PHP {serviceFee.toFixed(2)}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.label}>Total Payment</Text>
-            <Text style={styles.value}>PHP 2,603</Text>
+            <Text style={styles.value}>PHP {totalPaymentFormatted}</Text>
           </View>
         </View>
 
@@ -69,11 +131,7 @@ export default function BorrowedSummary() {
         <View style={styles.checkboxContainer}>
           <TouchableOpacity onPress={toggleCheckbox}>
             <Image
-              source={
-                isChecked
-                  ? require('./images/black-square.png') 
-                  : require('./images/square.png')
-              }
+              source={isChecked ? require('./images/black-square.png') : require('./images/square.png')}
               style={styles.checkbox}
             />
           </TouchableOpacity>
@@ -81,16 +139,33 @@ export default function BorrowedSummary() {
             I agree to the Terms and Conditions and to repay as per the billing due date schedule.
           </Text>
         </View>
+
         <TouchableOpacity
-        style={[
-          styles.button,
-          { backgroundColor: isChecked ? '#FF7A00' : '#dcdcdc' },
-        ]}
-        disabled={!isChecked}
-        onPress={() => navigation.navigate('Choose')} 
-      >
-        <Text style={styles.buttonText}>Accept</Text>
-      </TouchableOpacity>
+          style={[styles.button, { backgroundColor: isChecked ? '#FF7A00' : '#dcdcdc' }]}
+          disabled={!isChecked}
+          onPress={async () => {
+            const authToken = await AsyncStorage.getItem('authToken');
+            if (!authToken) {
+              Alert.alert('Error', 'You must be logged in to proceed');
+              return;
+            }
+
+            // Call the backend to update the money to pay
+            try {
+              await axios.post('https://lmsdb-lmserver.up.railway.app/updatemoneytopay', {
+                token: authToken,
+                moneyToPay: totalPayment,
+              });
+              Alert.alert('Success', 'Payment information updated');
+              navigation.navigate('Choose');
+            } catch (error) {
+              console.error('Error updating payment information:', error);
+              Alert.alert('Error', 'Failed to update payment information');
+            }
+          }}
+        >
+          <Text style={styles.buttonText}>Accept</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -185,13 +260,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 30,
     alignItems: 'center',
-    elevation: 5, 
-    shadowColor: '#000', 
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     width: 300,
-    },
+  },
   buttonText: {
     color: '#FFF',
     fontSize: 16,

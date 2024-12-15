@@ -1,24 +1,104 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Repayment = () => {
   const navigation = useNavigation();
-  const borrowedAmount = 2000;
-  const processingFeeRate = 0.0399;
-  const serviceFeeRatePerDay = 0.0043;
+  const [moneyReceived, setMoneyReceived] = useState(null); // Money received from API
+  const [totalPayment, setTotalPayment] = useState(0); // To store the total payment calculation result
+  const [selectedDay, setSelectedDay] = useState(15); // Default selected day
 
-  const minDays = 15;
-  const maxDays = 61;
+  useEffect(() => {
+    const fetchMoneyReceived = async () => {
+      try {
+        const authToken = await AsyncStorage.getItem('authToken');
+        if (!authToken) {
+          Alert.alert('Error', 'You must be logged in to view this information');
+          return;
+        }
 
-  const [selectedDay, setSelectedDay] = useState(minDays);
+        const response = await axios.get(
+          'https://lmsdb-lmserver.up.railway.app/borrowmoneyinfo',
+          { params: { token: authToken } }
+        );
 
-  const oneTimeProcessingFee = borrowedAmount * processingFeeRate;
-  const serviceFee = borrowedAmount * serviceFeeRatePerDay * selectedDay;
-  const totalPayment = borrowedAmount + oneTimeProcessingFee + serviceFee;
+        if (response.status === 200) {
+          const moneyReceived = response.data.moneyrecieved || 0;
+          setMoneyReceived(parseFloat(moneyReceived)); // Ensure it's a number
+        } else {
+          Alert.alert('Error', 'Failed to retrieve the amount');
+        }
+      } catch (error) {
+        console.error('Error fetching money:', error);
+        Alert.alert('Error', 'Something went wrong while fetching data');
+      }
+    };
 
-  const repaymentDate = new Date();
-  repaymentDate.setDate(repaymentDate.getDate() + selectedDay);
+    fetchMoneyReceived();
+  }, []);
+
+  useEffect(() => {
+    if (moneyReceived !== null && !isNaN(moneyReceived)) {
+      const borrowedAmount = moneyReceived;
+
+      // Ensure the selectedDay is valid and within the reasonable range (15 to 61)
+      if (selectedDay < 15 || selectedDay > 61) {
+        console.error('Invalid selectedDay:', selectedDay);
+        return;
+      }
+
+      // Calculate processing fee (3.99% of borrowed amount)
+      const processingFee = borrowedAmount * 0.0399;
+      console.log('Processing Fee:', processingFee);
+
+      // Calculate service fee (0.43% of borrowed amount per day, times the selected day)
+      const serviceFee = borrowedAmount * 0.0043 * selectedDay;
+      console.log('Service Fee:', serviceFee);
+
+      // Total payment calculation
+      const calculatedTotalPayment = borrowedAmount + processingFee + serviceFee;
+      console.log('Calculated Total Payment:', calculatedTotalPayment);
+
+      setTotalPayment(calculatedTotalPayment);
+    } else {
+      console.log('Money Received is null or invalid');
+    }
+  }, [moneyReceived, selectedDay]);
+
+  // Ensure totalPayment is a number and is valid before calling .toFixed()
+  const totalPaymentFormatted = isNaN(totalPayment) ? '0.00' : totalPayment.toFixed(2);
+
+  const handleContinue = async () => {
+    try {
+      const authToken = await AsyncStorage.getItem('authToken');
+      if (!authToken) {
+        Alert.alert('Error', 'You must be logged in to proceed');
+        return;
+      }
+
+      const response = await axios.post(
+        'https://lmsdb-lmserver.up.railway.app/updatemoneytopay',
+        {
+          token: authToken,
+          moneyToPay: totalPayment,
+        }
+      );
+
+      if (response.status === 200) {
+        Alert.alert('Success', 'Total payment updated successfully');
+        console.log('Selected Day',selectedDay)
+        navigation.navigate('BorrowedSummary', {selectedDay});
+
+      } else {
+        Alert.alert('Error', 'Failed to update total payment');
+      }
+    } catch (error) {
+      console.error('Error updating total payment:', error);
+      Alert.alert('Error', 'Something went wrong while updating the payment');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -27,10 +107,10 @@ const Repayment = () => {
         Select a date between 15 and 61 days from now when you're confident that you can repay.
       </Text>
 
-      <Text style={styles.date}>{repaymentDate.toDateString()}</Text>
+      <Text style={styles.date}>{totalPaymentFormatted}</Text>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.buttonGroup}>
-        {Array.from({ length: maxDays - minDays + 1 }, (_, i) => minDays + i).map((day) => (
+        {Array.from({ length: 61 - 15 + 1 }, (_, i) => 15 + i).map((day) => (
           <TouchableOpacity
             key={day}
             style={[styles.dayButton, selectedDay === day && styles.selectedButton]}
@@ -44,27 +124,24 @@ const Repayment = () => {
       <View style={styles.paymentCard}>
         <View style={styles.row}>
           <Text style={styles.label}>Borrowed Amount</Text>
-          <Text style={styles.value}>PHP {borrowedAmount.toLocaleString()}</Text>
+          <Text style={styles.value}>PHP {moneyReceived !== null ? moneyReceived.toLocaleString() : 'Loading...'}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>One-time processing fee (3.99%)</Text>
-          <Text style={styles.value}>PHP {oneTimeProcessingFee.toFixed(2)}</Text>
+          <Text style={styles.value}>PHP {(moneyReceived * 0.0399).toFixed(2)}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Service fee (0.43% / day)</Text>
-          <Text style={styles.value}>PHP {serviceFee.toFixed(2)}</Text>
+          <Text style={styles.value}>PHP {(moneyReceived * 0.0043 * selectedDay).toFixed(2)}</Text>
         </View>
         <View style={styles.row}>
           <Text style={[styles.label, styles.totalLabel]}>Total Payment</Text>
-          <Text style={[styles.value, styles.totalValue]}>
-            PHP {totalPayment.toFixed(2)}
-          </Text>
+          <Text style={[styles.value, styles.totalValue]}>PHP {totalPaymentFormatted}</Text>
         </View>
       </View>
-      <TouchableOpacity 
-          style={styles.button} 
-          onPress={() => navigation.navigate('BorrowedSummary')}>
-          <Text style={styles.buttonText}>Continue</Text>
+
+      <TouchableOpacity style={styles.button} onPress={handleContinue}>
+        <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
     </View>
   );
@@ -73,93 +150,93 @@ const Repayment = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FDF9F6",
-    justifyContent: "center",
+    backgroundColor: '#FDF9F6',
+    justifyContent: 'center',
   },
   title: {
     marginLeft: 20,
     marginTop: 70,
     fontSize: 30,
-    fontWeight: "bold",
-    color: "#000",
-    textAlign: "left",
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'left',
     marginBottom: 10,
   },
   subtitle: {
     marginLeft: 20,
     fontSize: 14,
-    color: "#333",
-    textAlign: "left",
+    color: '#333',
+    textAlign: 'left',
     marginBottom: 30,
   },
   date: {
     marginTop: 50,
     fontSize: 40,
-    fontWeight: "bold",
-    color: "#333",
-    textAlign: "center",
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
     marginBottom: -170,
   },
   buttonGroup: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   dayButton: {
-    backgroundColor: "#FF6F00",
+    backgroundColor: '#FF6F00',
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginHorizontal: 5,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selectedButton: {
-    backgroundColor: "#F5B301",
+    backgroundColor: '#F5B301',
   },
   buttonText: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   selectedButtonText: {
-    color: "#FFF",
+    color: '#FFF',
   },
   paymentCard: {
     marginLeft: 30,
     width: 300,
-    position: "relative",  
-    top: -180,               
-    backgroundColor: "#FFF",
+    position: 'relative',
+    top: -180,
+    backgroundColor: '#FFF',
     borderRadius: 8,
     padding: 15,
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     marginBottom: 10,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 5,
   },
   label: {
     fontSize: 14,
-    color: "#555",
+    color: '#555',
   },
   value: {
     fontSize: 14,
-    fontWeight: "bold",
-    color: "#000",
+    fontWeight: 'bold',
+    color: '#000',
   },
   totalLabel: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 16,
   },
   totalValue: {
     fontSize: 16,
-    color: "#E57300",
+    color: '#E57300',
   },
   button: {
     marginLeft: 40,
@@ -168,8 +245,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 30,
     alignItems: 'center',
-    elevation: 5, 
-    shadowColor: '#000', 
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,

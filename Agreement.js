@@ -1,9 +1,20 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'; 
+// Agreement.js
+import React, { useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native'; 
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from './AuthContext'; // Importing the AuthContext
 
 const Agreement = () => {
   const navigation = useNavigation();
+  const { authToken, logout } = useAuth(); // Access token and logout function from AuthContext
+
+  // Ensure user is logged in by checking if authToken exists
+  useEffect(() => {
+    if (!authToken) {
+      Alert.alert('Not Logged In', 'Please log in to proceed');
+      navigation.navigate('Login'); // Navigate to login screen if no token
+    }
+  }, [authToken, navigation]);
 
   return (
     <View style={styles.container}>
@@ -64,7 +75,10 @@ const Agreement = () => {
 
       <TouchableOpacity
         style={styles.denyButton}
-        onPress={() => navigation.navigate('WelcomeScreen')}
+        onPress={() => {
+          logout(); // Log out the user by clearing the authToken
+          navigation.navigate('Panel'); // Redirect to the WelcomeScreen
+        }}
       >
         <Text style={styles.denyText}>Deny</Text>
       </TouchableOpacity>

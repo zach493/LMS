@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { AuthProvider } from './AuthContext'; // Import AuthProvider
 import WelcomeScreen from './WelcomeScreen';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
@@ -28,6 +29,7 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    <AuthProvider>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
@@ -54,5 +56,6 @@ export default function App() {
         <Stack.Screen name="Money" component={Money} />
       </Stack.Navigator>
     </NavigationContainer>
+    </AuthProvider>
   );
 }

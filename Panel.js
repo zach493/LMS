@@ -1,9 +1,23 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 const Panel = () => {
   const navigation = useNavigation();
+
+  // Function to handle logout
+  const handleLogout = async () => {
+    try {
+      // Remove auth token from AsyncStorage
+      await AsyncStorage.removeItem('authToken');
+      Alert.alert('Success', 'You have been logged out successfully.');
+      navigation.navigate('Login'); // Navigate back to Login screen
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Please try again later.');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -13,28 +27,31 @@ const Panel = () => {
         <Image source={require('./images/Loan_Logo_hand.png')} style={styles.topIcon} />
       </View>
 
-      
       <View style={styles.card}>
-          <View style={styles.cardContent}>
-              <View>
-                  <Text style={styles.cardTitle}>Borrow your way</Text>
-                  <Text style={styles.cardDescription}>
-                      Apply once and get continuous {'\n'}access to cash.
-                  </Text>
-              </View>
-              <Image source={require('./images/job-seeker.png')} style={styles.card1} />
+        <View style={styles.cardContent}>
+          <View>
+            <Text style={styles.cardTitle}>Borrow your way</Text>
+            <Text style={styles.cardDescription}>
+              Apply once and get continuous {'\n'}access to cash.
+            </Text>
           </View>
+          <Image source={require('./images/job-seeker.png')} style={styles.card1} />
+        </View>
 
-          <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate('Personal')}
-          >
-              <Text style={styles.buttonText}>Continue</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Personal')}
+        >
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
       </View>
-     
 
-{/* 
+      {/* Logout Button */}
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutButtonText}>Log Out</Text>
+      </TouchableOpacity>
+
+      {/* 
       <View style={styles.row}>
           <View>
               <Text style={styles.boldText}>To pay on January 26, 2025</Text>
@@ -47,7 +64,7 @@ const Panel = () => {
           </View>
 
         <TouchableOpacity
-          style={styles.button}
+          style={styles.button1}
           onPress={() => navigation.navigate('Repayment')}
         >
           <Text style={styles.buttonText}>Make a Payment</Text>
@@ -79,12 +96,12 @@ const Panel = () => {
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Money')}>
         <Text style={styles.linkText}>View my LMS limit</Text>
-      </TouchableOpacity>*
-      </View>
+      </TouchableOpacity>
       */}
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -99,40 +116,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 3,
     elevation: 2,
-  },
-  /*
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 60,
-  },
-  boldText: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: '#000',
-  },
-  label: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  value: {
-    color: '#333',
-    fontWeight: '400',
-    color: '#FF6600',
-    fontSize: 14,
-  }
-*/
-
-  linkText: {
-    fontSize: 16,
-    color: '#007AFF',
-    textDecorationLine: 'underline',
-    fontWeight: 'bold',
-    marginTop: 16,
   },
   header: {
     fontSize: 24,
@@ -207,7 +190,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     lineHeight: 22,
   },
- /* button: {
+  button1: {
     marginTop: 20,
     backgroundColor: '#FF6600',
     width: 140,
@@ -222,7 +205,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
-  },*/
+  },
   button: {
     backgroundColor: '#FF6600',
     height: 35,
@@ -236,6 +219,25 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 7,
+  },
+  logoutButton: {
+    backgroundColor: '#FF6600',
+    height: 40,
+    width: 120, 
+    borderRadius: 25,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  logoutButtonText: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,

@@ -1,22 +1,52 @@
-import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Image, 
-  ScrollView 
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Alert} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const ReviewForm = () => {
-    const navigation = useNavigation(); 
+  const navigation = useNavigation(); 
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const authToken = await AsyncStorage.getItem('authToken');
+      if (!authToken) {
+        Alert.alert('Error', 'You must be logged in to view this page');
+        return;
+      }
+
+      try {
+        const response = await axios.get('https://lmsdb-lmserver.up.railway.app/userinforev', {
+          params: { token: authToken }, // Send token as query parameter
+        });
+
+        if (response.status === 200) {
+          setUserData(response.data); 
+        } else {
+          Alert.alert('Error', 'Failed to fetch user data');
+        }
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'Something went wrong');
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  if (!userData) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => console.log('Go Back')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image 
             source={require('./images/left-arrow.png')} 
             style={styles.icon}
@@ -26,27 +56,22 @@ const ReviewForm = () => {
       </View>
 
       <ScrollView style={styles.content}>
-        <Text style={styles.label}>First Name: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Middle Name: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Last Name: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Date of Birth: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Place of Birth: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Civil Status: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Mother's Maiden Name: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Sex: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Email Address: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Alternative Phone Number: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Province / City: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Barangay: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Permanent Address: <Text style={styles.placeholder}>TBA</Text></Text>
-        <Text style={styles.label}>Postal Code: <Text style={styles.placeholder}>TBA</Text></Text>
+        <Text style={styles.label}>First Name: <Text style={styles.placeholder}>{userData.firstname}</Text></Text>
+        <Text style={styles.label}>Middle Name: <Text style={styles.placeholder}>{userData.middlename || 'N/A'}</Text></Text>
+        <Text style={styles.label}>Last Name: <Text style={styles.placeholder}>{userData.lastname}</Text></Text>
+        <Text style={styles.label}>Date of Birth: <Text style={styles.placeholder}>{userData.birthdate}</Text></Text>
+        <Text style={styles.label}>Place of Birth: <Text style={styles.placeholder}>{userData.placeofbirth}</Text></Text>
+        <Text style={styles.label}>Civil Status: <Text style={styles.placeholder}>{userData.civilstatus}</Text></Text>
+        <Text style={styles.label}>Mother's Maiden Name: <Text style={styles.placeholder}>{userData.mothersmaidenname}</Text></Text>
+        <Text style={styles.label}>Sex: <Text style={styles.placeholder}>{userData.sex}</Text></Text>
+        <Text style={styles.label}>Alternative Phone Number: <Text style={styles.placeholder}>{userData.altphonenumber || 'TBA'}</Text></Text>
       </ScrollView>
 
       <TouchableOpacity 
-      style={styles.button} 
-      onPress={() => navigation.navigate('CA')}>
-      <Text style={styles.buttonText}>Review and continue</Text>
-    </TouchableOpacity>
+        style={styles.button} 
+        onPress={() => navigation.navigate('CA')}>
+        <Text style={styles.buttonText}>Review and continue</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -101,7 +126,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     width: 320,
-    },
+  },
   buttonText: {
     color: '#FFF',
     fontSize: 16,
