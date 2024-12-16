@@ -1,10 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios'; // Import Axios
 
 export default function Choose() {
+  const navigation = useNavigation();
   
-  const navigation = useNavigation(); 
+  const [moneyReceived, setMoneyReceived] = useState(null);
+  const [token, setToken] = useState(''); // Replace with the actual token value (from auth or storage)
+  const serviceFee = 15;
+
+  // Fetch moneyrecieved on component mount or token change
+  useEffect(() => {
+    if (token) {
+      fetchMoneyReceived();
+    }
+  }, [token]);
+
+  const fetchMoneyReceived = async () => {
+    try {
+      const response = await axios.get(`https://lmsdb-lmserver.up.railway.app/borrowmoneyrec?token=${token}`);
+      
+      if (response.status === 200) {
+        setMoneyReceived(response.data.moneyrecieved);
+      } else {
+        console.error('Error:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Axios error:', error);
+    }
+  };
+
+  const amountToReceive = moneyReceived ? moneyReceived - serviceFee : 0;
 
   return (
     <View style={styles.container}>
@@ -24,7 +51,9 @@ export default function Choose() {
               Service fee: <Text style={styles.value}>PHP 15</Text>
             </Text>
             <Text style={styles.label}>
-              You'll receive: <Text style={styles.value}>PHP 1,985</Text>
+              You'll receive: <Text style={styles.value}>
+                {moneyReceived ? `PHP ${amountToReceive.toFixed(2)}` : 'Loading...'}
+              </Text>
             </Text>
           </View>
           <Image
