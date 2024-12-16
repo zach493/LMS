@@ -61,7 +61,7 @@ const Application = () => {
           'A form has already been created. Do you want to edit it or continue?',
           [
             { text: 'Edit', onPress: () => navigation.navigate('Application') },
-            { text: 'Continue', onPress: () => navigation.navigate('ReviewForm') }
+            { text: 'Continue', onPress: () => navigation.navigate('Repayment') }
           ]
         );
       } else {

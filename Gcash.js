@@ -1,7 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ScrollView,} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function GCash() {
   const navigation = useNavigation();
@@ -9,17 +19,78 @@ export default function GCash() {
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [gcashNumber, setGcashNumber] = useState('');
+  const [moneyReceived, setMoneyReceived] = useState(null);
+  const serviceFee = 15;
 
-  const handleClaim = () => {
-    console.log('Full Name:', fullName);
-    console.log('Phone Number:', phoneNumber);
-    console.log('GCash Number:', gcashNumber);
+  useEffect(() => {
+    const fetchMoneyReceived = async () => {
+      try {
+        const authToken = await AsyncStorage.getItem('authToken');
+        if (!authToken) {
+          Alert.alert('Error', 'You must be logged in to proceed.');
+          return;
+        }
+
+        const response = await axios.get(
+          'https://lmsdb-lmserver.up.railway.app/borrowmoneyrec',
+          {
+            params: { token: authToken },
+          }
+        );
+
+        if (response.status === 200) {
+          setMoneyReceived(response.data.moneyrecieved);
+        } else {
+          console.error('Error:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Axios error:', error);
+        Alert.alert('Error', 'Failed to fetch money received.');
+      }
+    };
+
+    fetchMoneyReceived();
+  }, []);
+
+  const handleClaim = async () => {
+    try {
+      const authToken = await AsyncStorage.getItem('authToken');
+      if (!authToken) {
+        Alert.alert('Error', 'You must be logged in to proceed.');
+        return;
+      }
+
+      const payload = {
+        token: authToken,
+        namegcash: fullName,
+        nogcash: phoneNumber,
+        gcashsent: gcashNumber,
+      };
+
+      const response = await axios.post(
+        'https://lmsdb-lmserver.up.railway.app/gcashpayment',
+        payload
+      );
+
+      if (response.status === 200) {
+        Alert.alert('Success', 'Your GCash details have been submitted successfully!');
+        navigation.navigate('Panel');
+      } else {
+        console.error('Error:', response.data.message);
+        Alert.alert('Error', response.data.message || 'Failed to submit details.');
+      }
+    } catch (error) {
+      console.error('Axios error:', error);
+      Alert.alert('Error', 'Failed to submit details. Please try again.');
+    }
   };
+
+  const amountToReceive = moneyReceived ? moneyReceived - serviceFee : 0;
 
   return (
     <View style={styles.container}>
       <View style={styles.header1}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image source={require('./images/left-arrow.png')} style={styles.icon} />
         </TouchableOpacity>
         <Text style={styles.title1}>GCash</Text>
@@ -45,7 +116,7 @@ export default function GCash() {
           onChangeText={setPhoneNumber}
         />
 
-        <Text style={styles.label}>Receiving Gcash mobile number</Text>
+        <Text style={styles.label}>Receiving GCash mobile number:</Text>
         <TextInput
           style={styles.input}
           placeholder="11 digit mobile number"
@@ -61,22 +132,21 @@ export default function GCash() {
             <Text style={styles.bold}>Processing Time:</Text> Instant
           </Text>
           <Text style={styles.cardText}>
-            <Text style={styles.bold}>Service fee:</Text> PHP 15
+            <Text style={styles.bold}>Service fee:</Text> PHP {serviceFee.toFixed(2)}
           </Text>
           <Text style={styles.cardText}>
-            <Text style={styles.bold}>You'll receive:</Text> PHP 1,985
+            <Text style={styles.bold}>You'll receive:</Text>{' '}
+            {moneyReceived ? `PHP ${amountToReceive.toFixed(2)}` : 'Loading...'}
           </Text>
         </View>
 
         <Text style={styles.disclaimer}>
-          *Service fee are calculated and charged by the cash out partner
+          *Service fees are calculated and charged by the cash-out partner.
         </Text>
       </ScrollView>
 
-      <TouchableOpacity 
-          style={styles.button} 
-          onPress={() => navigation.navigate('Panel')}>
-          <Text style={styles.buttonText}>Claim my limit</Text>
+      <TouchableOpacity style={styles.button} onPress={handleClaim}>
+        <Text style={styles.buttonText}>Claim my limit</Text>
       </TouchableOpacity>
     </View>
   );
@@ -176,13 +246,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 30,
     alignItems: 'center',
-    elevation: 5, 
-    shadowColor: '#000', 
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     width: 300,
-    },
+  },
   buttonText: {
     color: '#FFF',
     fontSize: 16,

@@ -21,7 +21,7 @@ export default function LoginScreen() {
 
     setLoading(true); 
 
-    const apiUrl = 'https://lmsdb-lmserver.up.railway.app/login'; // Corrected endpoint for login
+    const apiUrl = 'https://lmsdb-lmserver.up.railway.app/login'; 
 
     try {
       const response = await axios.post(apiUrl, {
@@ -30,7 +30,7 @@ export default function LoginScreen() {
       },
       {
         headers: {
-          'Content-Type': 'application/json', // Ensure content-type is set correctly
+          'Content-Type': 'application/json', 
         }
       });
 

@@ -1,41 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios'; // Import Axios
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Choose() {
   const navigation = useNavigation();
   
   const [moneyReceived, setMoneyReceived] = useState(null);
-  const [token, setToken] = useState(''); // Replace with the actual token value (from auth or storage)
   const serviceFee = 15;
 
-  // Fetch moneyrecieved on component mount or token change
   useEffect(() => {
-    if (token) {
-      fetchMoneyReceived();
-    }
-  }, [token]);
+    const fetchMoneyReceived = async () => {
+      try {
+        const authToken = await AsyncStorage.getItem('authToken');
+        if (!authToken) {
+          Alert.alert('Error', 'You must be logged in to proceed.');
+          return;
+        }
 
-  const fetchMoneyReceived = async () => {
-    try {
-      const response = await axios.get(`https://lmsdb-lmserver.up.railway.app/borrowmoneyrec?token=${token}`);
-      
-      if (response.status === 200) {
-        setMoneyReceived(response.data.moneyrecieved);
-      } else {
-        console.error('Error:', response.data.message);
+        const response = await axios.get('https://lmsdb-lmserver.up.railway.app/borrowmoneyrec', {
+          params: { token: authToken },
+        });
+
+        if (response.status === 200) {
+          setMoneyReceived(response.data.moneyrecieved);
+        } else {
+          console.error('Error:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Axios error:', error);
+        Alert.alert('Error', 'Failed to fetch money received.');
       }
-    } catch (error) {
-      console.error('Axios error:', error);
-    }
-  };
+    };
+
+    fetchMoneyReceived();
+  }, []);
 
   const amountToReceive = moneyReceived ? moneyReceived - serviceFee : 0;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Choose where to claim your PHP 2,000 loan</Text>
+      <Text style={styles.title}>Choose where to claim your loan</Text>
 
       <TouchableOpacity
         style={styles.card}
@@ -48,7 +54,7 @@ export default function Choose() {
               Processing Time: <Text style={styles.value}>Instant</Text>
             </Text>
             <Text style={styles.label}>
-              Service fee: <Text style={styles.value}>PHP 15</Text>
+              Service fee: <Text style={styles.value}>PHP {serviceFee.toFixed(2)}</Text>
             </Text>
             <Text style={styles.label}>
               You'll receive: <Text style={styles.value}>
