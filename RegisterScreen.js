@@ -38,7 +38,7 @@ export default function RegisterScreen({ navigation }) {
     try {
       console.log('Sending data:', userData);
       const response = await axios.post(
-        'https://dde5-2001-4455-25a-4e00-5cdf-cd0b-2a3b-4fbe.ngrok-free.app/users',
+        'https://lmsdb-lmserver.up.railway.app/users',
         userData,
         { timeout: 20000 }
       );
