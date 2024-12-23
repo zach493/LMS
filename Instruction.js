@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity,Image } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 const Instruction = () => {
   const navigation = useNavigation();
   const [referenceNumber, setReferenceNumber] = useState("");
+  const [paymentAmount, setPaymentAmount] = useState(null);
 
   const generateReferenceNumber = () => {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -17,6 +20,35 @@ const Instruction = () => {
 
   useEffect(() => {
     setReferenceNumber(generateReferenceNumber());
+
+    const getToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken'); 
+        if (token) {
+          axios.get('https://lmsdb-lmserver.up.railway.app/paymentinfo', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          .then(response => {
+            if (response.data.message === 'Nothing to pay') {
+              setPaymentAmount('Nothing to pay');
+            } else if (response.data.moneytopay) {
+              setPaymentAmount(`PHP ${response.data.moneytopay}`);
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching payment info:', error);
+            setPaymentAmount('Error fetching payment info');
+          });
+        } else {
+          console.log('Token not found');
+        }
+      } catch (error) {
+        console.error('Error retrieving token:', error);
+      }
+    };
+
+    getToken();
+
   }, []);
 
   return (
@@ -25,7 +57,7 @@ const Instruction = () => {
 
       <View style={styles.card}>
         <Text style={styles.title}>Payment Amount</Text>
-        <Text style={styles.amount}>PHP 1,701.00</Text>
+        <Text style={styles.amount}>{paymentAmount || 'Loading...'}</Text>
         <Text style={styles.subtitle}>Includes PHP 20 ECPay convenience fee</Text>
 
         <Text style={styles.title}>Reference Number</Text>
@@ -99,42 +131,42 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#007BFF",
   },
-  stepCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
+  secondaryButton: {
+    marginTop: 20,
+    backgroundColor: "#007BFF",
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
   },
-  icon: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  logoutButton: {
+    marginTop: 20,
+    backgroundColor: "#FF0000",
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  stepCard: {
+    backgroundColor: "#F5F5F5",
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
   },
   stepTitle: {
-    fontSize: 16,
     fontWeight: "bold",
+    fontSize: 16,
   },
   stepDescription: {
     fontSize: 14,
     color: "#666",
   },
-  button: {
-    backgroundColor: "#FF6F00",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  secondaryButton: {
-    backgroundColor: "#FFA726",
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "bold",
+  icon: {
+    width: 50,
+    height: 50,
+    marginRight: 15,
   },
 });
 
