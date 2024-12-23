@@ -124,7 +124,7 @@ export default function BorrowedSummary() {
           <Text style={styles.sectionTitle}>Conditional Charges that May Apply</Text>
           <Text style={styles.sectionText}>
             - Late fee: 5.00% of the outstanding amount if unpaid by day 61.{'\n'}
-            - Cash out/Cash in fee: See link.
+
           </Text>
         </View>
 
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 20,
-    marginLeft: 9,
+    marginLeft: 35,
     backgroundColor: '#FF7A00',
     padding: 10,
     borderRadius: 30,

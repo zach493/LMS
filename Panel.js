@@ -1,18 +1,18 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Panel = () => {
   const navigation = useNavigation();
 
-  // Function to handle logout
+
   const handleLogout = async () => {
     try {
-      // Remove auth token from AsyncStorage
+
       await AsyncStorage.removeItem('authToken');
       Alert.alert('Success', 'You have been logged out successfully.');
-      navigation.navigate('Login'); // Navigate back to Login screen
+      navigation.navigate('Login');
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Something went wrong. Please try again later.');
@@ -46,7 +46,7 @@ const Panel = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Logout Button */}
+
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Log Out</Text>
       </TouchableOpacity>
@@ -224,24 +224,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 7,
   },
-  logoutButton: {
-    backgroundColor: '#FF6600',
-    height: 40,
-    width: 120, 
-    borderRadius: 25,
-    alignItems: 'center',
-    marginTop: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
-  },
   logoutButtonText: {
-    color: '#fff',
+    color: '#FF6600',
     fontWeight: 'bold',
     fontSize: 16,
-    marginTop: 7,
+    marginTop: -365,
+    marginLeft: 300,
   },
   linkText: {
     color: '#FF6600',

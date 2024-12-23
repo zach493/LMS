@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   footerText: {
-    marginLeft: -30,
+    marginLeft: -5,
     backgroundColor: '#F5F1E7',
     paddingTop: 15,
     paddingBottom: 15,

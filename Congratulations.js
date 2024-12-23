@@ -11,7 +11,7 @@ const Congratulations = () => {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [token, setToken] = useState(null);
 
-  // Fetch the token from AsyncStorage
+
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -19,7 +19,7 @@ const Congratulations = () => {
         console.log('Auth Token:', authToken);
         if (!authToken) {
           Alert.alert('Error', 'You must be logged in to continue.');
-          navigation.navigate('Login'); // Redirect to Login if no token is found
+          navigation.navigate('Login');
           return;
         }
         setToken(authToken);
@@ -31,7 +31,7 @@ const Congratulations = () => {
 
     fetchToken();
 
-    // Keyboard listeners
+
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       () => setKeyboardVisible(true)
@@ -64,11 +64,11 @@ const Congratulations = () => {
     }
   
     try {
-      const authToken = await AsyncStorage.getItem('authToken'); // Get token dynamically
+      const authToken = await AsyncStorage.getItem('authToken');
       const response = await axios.post(
         'https://lmsdb-lmserver.up.railway.app/borrowmon',
-        { token: authToken, moneyrecieved: value }, // Send as body
-        { headers: { 'Content-Type': 'application/json' } } // Proper headers
+        { token: authToken, moneyrecieved: value },
+        { headers: { 'Content-Type': 'application/json' } }
       );
   
       if (response.status === 200 || response.status === 201) {

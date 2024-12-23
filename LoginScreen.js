@@ -49,7 +49,7 @@ export default function LoginScreen() {
       } else if (error.request) {
         Alert.alert('Network Error', 'Unable to reach the server. Please try again later.');
       } else {
-        // Other errors
+
         Alert.alert('Error', 'An unexpected error occurred.');
       }
     } finally {

@@ -13,30 +13,30 @@ import axios from 'axios';
 
 const Approved = () => {
   const navigation = useNavigation();
-  const [moneyReceived, setMoneyReceived] = useState(null); // Correct state variable name
+  const [moneyReceived, setMoneyReceived] = useState(null);
 
   useEffect(() => {
     const fetchMoneyReceived = async () => {
       try {
-        // Get authentication token from AsyncStorage
+
         const authToken = await AsyncStorage.getItem('authToken');
         if (!authToken) {
           Alert.alert('Error', 'You must be logged in to view this information');
           return;
         }
 
-        console.log('Auth Token:', authToken); // Debug token
+        console.log('Auth Token:', authToken);
 
-        // Make the API call to fetch the money received
+
         const response = await axios.get(
           'https://lmsdb-lmserver.up.railway.app/borrowmoneyrec', 
           { params: { token: authToken } }
         );
 
-        console.log('API Response:', response.data); // Debug API response
+        console.log('API Response:', response.data);
 
         if (response.status === 200) {
-          setMoneyReceived(response.data.moneyrecieved || 0); // Update money received
+          setMoneyReceived(response.data.moneyrecieved || 0);
         } else {
           Alert.alert('Error', 'Failed to retrieve the amount');
         }
@@ -46,14 +46,14 @@ const Approved = () => {
       }
     };
 
-    fetchMoneyReceived(); // Trigger the data fetch
+    fetchMoneyReceived();
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.approvedText}>You're approved</Text>
       <Text style={styles.amount}>
-        PHP {moneyReceived !== null ? moneyReceived : 'Loading...'} {/* Correct state usage */}
+        PHP {moneyReceived !== null ? moneyReceived : 'Loading...'}
       </Text>
 
       <View style={styles.infoContainer}>
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   button: {
+    marginLeft: 25,
     marginBottom: -70,
     backgroundColor: '#FF7A00',
     padding: 10,
