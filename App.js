@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthProvider } from './AuthContext'; // Import AuthProvider
+import { AuthProvider } from './AuthContext';
 import WelcomeScreen from './WelcomeScreen';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
@@ -24,6 +24,8 @@ import Choose from './Choose';
 import History from './History';
 import Gcash from './Gcash';
 import Money from './Money';
+import Instruction from './Instruction';
+import Pay from './Pay';
 
 const Stack = createStackNavigator();
 
@@ -54,6 +56,8 @@ export default function App() {
         <Stack.Screen name="Gcash" component={Gcash} />
         <Stack.Screen name="History" component={History} />
         <Stack.Screen name="Money" component={Money} />
+        <Stack.Screen name="Pay" component={Pay} />
+        <Stack.Screen name="Instruction" component={Instruction} />
       </Stack.Navigator>
     </NavigationContainer>
     </AuthProvider>
