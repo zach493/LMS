@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
     textAlign: 'left',
-    marginTop: 10,
+    marginTop: 20,
+    marginBottom: -10,
   },
   button: {
     backgroundColor: '#FF6600',
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 25,
     marginTop: 20,
-    width: 320,
+    width: 350,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,

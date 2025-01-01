@@ -19,30 +19,10 @@ const Panel = () => {
 
   return (
     <View style={styles.container}>
+     <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutButtonText}>Log Out</Text>
+          </TouchableOpacity>
       <Text style={styles.header}>LMS</Text>
-
-      <View style={styles.card}>
-        <View style={styles.cardContent}>
-          <View>
-            <Text style={styles.cardTitle}>Borrow your way</Text>
-            <Text style={styles.cardDescription}>
-              Apply once and get continuous {'\n'}access to cash.
-            </Text>
-          </View>
-          <Image source={require('./images/job-seeker.png')} style={styles.cardImage} />
-        </View>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Personal')}
-        >
-          <Text style={styles.buttonText}>Continue</Text>
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutButtonText}>Log Out</Text>
-      </TouchableOpacity>
 
       <View style={styles.row}>
         <View>
@@ -62,6 +42,26 @@ const Panel = () => {
           <Text style={styles.buttonText}>Make a Payment</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.card}>
+        <View style={styles.cardContent}>
+          <View>
+            <Text style={styles.cardTitle}>Borrow your way</Text>
+            <Text style={styles.cardDescription}>
+              Apply once and get continuous {'\n'}access to cash.
+            </Text>
+          </View>
+          <Image source={require('./images/job-seeker.png')} style={styles.cardImage} />
+        </View>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Personal')}
+        >
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+
+
 
       <View style={styles.card}>
         <View style={styles.cardContent}>
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#F5B301',
-    marginBottom: 20,
+    marginBottom: 30,
     marginTop: 25,
   },
   topIcon: {
@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 320,
     elevation: 5,
+     marginBottom: 20,
   },
   buttonText: {
     color: '#fff',
@@ -170,12 +171,15 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     alignSelf: 'flex-end',
-    marginTop: 10,
+    marginTop: 30,
+    marginBottom: -55,
+
   },
   logoutButtonText: {
     color: '#FF6600',
     fontWeight: 'bold',
     fontSize: 16,
+
   },
   linkText: {
     color: '#FF6600',
