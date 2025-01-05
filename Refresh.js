@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   button: {
-    marginLeft: 80,
+    marginLeft: 60,
     marginBottom: -70,
     backgroundColor: '#FF7A00',
     padding: 10,

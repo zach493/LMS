@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#606060',
+    marginRight: 10,
   },
   input: {
     borderWidth: 1,

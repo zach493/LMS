@@ -75,7 +75,7 @@ const Panel = () => {
           </View>
         ))
       ) : (
-        <Text>No borrowing history found.</Text>
+        <Text></Text>
       )}
 
 

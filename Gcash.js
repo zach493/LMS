@@ -143,11 +143,11 @@ export default function GCash() {
         <Text style={styles.disclaimer}>
           *Service fees are calculated and charged by the cash-out partner.
         </Text>
-      </ScrollView>
 
       <TouchableOpacity style={styles.button} onPress={handleClaim}>
         <Text style={styles.buttonText}>Claim my limit</Text>
       </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 30,
-    marginLeft: 49,
+    marginLeft: 15,
     backgroundColor: '#FF7A00',
     padding: 10,
     borderRadius: 30,

@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   paymentCard: {
-    marginLeft: 55,
+    marginLeft: 30,
     width: 300,
     position: 'relative',
     top: -180,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     color: '#E57300',
   },
   button: {
-    marginLeft: 65,
+    marginLeft: 40,
     top: -74,
     backgroundColor: '#FF7A00',
     padding: 10,
