@@ -3,21 +3,19 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'reac
 import axios from 'axios';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
-import { useAuth } from './AuthContext'; // Importing the AuthContext
+import { useAuth } from './AuthContext'; 
 
-// Function to generate a random token
 const generateRandomToken = () => {
-  return Math.random().toString(36).substr(2); // generates a random string token
+  return Math.random().toString(36).substr(2); 
 };
 
 export default function RegisterScreen({ navigation }) {
-  const { setToken } = useAuth(); // Get setToken from context to store the token
+  const { setToken } = useAuth(); 
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Function to handle registration
   const handleRegister = async () => {
     const netState = await NetInfo.fetch();
     if (!netState.isConnected) {
@@ -30,10 +28,9 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
 
-    // Generate the token for the user
     const token = generateRandomToken(); 
 
-    const userData = { mobile, email, password, token }; // Pass token as part of the request
+    const userData = { mobile, email, password, token }; 
 
     try {
       console.log('Sending data:', userData);
@@ -46,16 +43,14 @@ export default function RegisterScreen({ navigation }) {
       console.log('Response:', response.data);
 
       if (response.status === 201) {
-        // If token exists in response, use it; otherwise, generate a random token
+     
         const responseToken = response.data.token || token;
-        console.log('Auth Token:', responseToken); // Debug: Log the token
+        console.log('Auth Token:', responseToken); 
 
-        // Save token to AsyncStorage and update context
         if (responseToken) {
-          await AsyncStorage.setItem('authToken', responseToken); // Store token in AsyncStorage
-          setToken(responseToken); // Store token in context for global state
-          Alert.alert('Success', 'User registered successfully');
-          navigation.navigate('Agreement'); // Navigate to the next screen
+          await AsyncStorage.setItem('authToken', responseToken); 
+          setToken(responseToken); 
+          navigation.navigate('Agreement'); 
         } else {
           Alert.alert('Error', 'Authentication token is missing');
         }

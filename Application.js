@@ -29,7 +29,7 @@ const Application = () => {
     }
   
     const data = {
-      token: authToken,  // Send token in the body
+      token: authToken,  
       firstname,
       middlename,
       lastname,
@@ -55,7 +55,6 @@ const Application = () => {
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        // Handle case when a form already exists
         Alert.alert(
           'Form Exists',
           'A form has already been created. Do you want to edit it or continue?',

@@ -6,9 +6,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Repayment = () => {
   const navigation = useNavigation();
-  const [moneyReceived, setMoneyReceived] = useState(null); // Money received from API
-  const [totalPayment, setTotalPayment] = useState(0); // To store the total payment calculation result
-  const [selectedDay, setSelectedDay] = useState(15); // Default selected day
+  const [moneyReceived, setMoneyReceived] = useState(null); 
+  const [totalPayment, setTotalPayment] = useState(0); 
+  const [selectedDay, setSelectedDay] = useState(15); 
 
   useEffect(() => {
     const fetchMoneyReceived = async () => {
@@ -26,7 +26,7 @@ const Repayment = () => {
 
         if (response.status === 200) {
           const moneyReceived = response.data.moneyrecieved || 0;
-          setMoneyReceived(parseFloat(moneyReceived)); // Ensure it's a number
+          setMoneyReceived(parseFloat(moneyReceived)); 
         } else {
           Alert.alert('Error', 'Failed to retrieve the amount');
         }
@@ -43,21 +43,17 @@ const Repayment = () => {
     if (moneyReceived !== null && !isNaN(moneyReceived)) {
       const borrowedAmount = moneyReceived;
 
-      // Ensure the selectedDay is valid and within the reasonable range (15 to 61)
       if (selectedDay < 15 || selectedDay > 61) {
         console.error('Invalid selectedDay:', selectedDay);
         return;
       }
 
-      // Calculate processing fee (3.99% of borrowed amount)
       const processingFee = borrowedAmount * 0.0399;
       console.log('Processing Fee:', processingFee);
 
-      // Calculate service fee (0.43% of borrowed amount per day, times the selected day)
       const serviceFee = borrowedAmount * 0.0043 * selectedDay;
       console.log('Service Fee:', serviceFee);
 
-      // Total payment calculation
       const calculatedTotalPayment = borrowedAmount + processingFee + serviceFee;
       console.log('Calculated Total Payment:', calculatedTotalPayment);
 
@@ -67,7 +63,6 @@ const Repayment = () => {
     }
   }, [moneyReceived, selectedDay]);
 
-  // Ensure totalPayment is a number and is valid before calling .toFixed()
   const totalPaymentFormatted = isNaN(totalPayment) ? '0.00' : totalPayment.toFixed(2);
 
   const handleContinue = async () => {

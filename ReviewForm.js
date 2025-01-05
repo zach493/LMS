@@ -18,7 +18,7 @@ const ReviewForm = () => {
 
       try {
         const response = await axios.get('https://lmsdb-lmserver.up.railway.app/userinforev', {
-          params: { token: authToken }, // Send token as query parameter
+          params: { token: authToken }, 
         });
 
         if (response.status === 200) {

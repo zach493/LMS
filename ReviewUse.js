@@ -23,7 +23,7 @@ const ReviewUse = () => {
         });
 
         if (response.status === 200) {
-          setFormData(response.data); // Store the user data in stat
+          setFormData(response.data);
         } else {
           Alert.alert('Error', 'Failed to retrieve user data');
         }
@@ -37,7 +37,7 @@ const ReviewUse = () => {
   }, []);
 
   if (!formData) {
-    return <Text>Loading...</Text>; // Show a loading state while the data is being fetched
+    return <Text>Loading...</Text>; 
   }
 
   return (

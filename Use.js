@@ -201,7 +201,7 @@ const Use = () => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={handleSaveAndContinue} // Call the function to save data
+          onPress={handleSaveAndContinue}
         >
           <Text style={styles.buttonText}>Save and continue</Text>
         </TouchableOpacity>

@@ -6,17 +6,16 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 const ApplicationEdit = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { authToken } = route.params;  // Get authToken passed from previous screen
+  const { authToken } = route.params;  
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    // Fetch the existing data from the server using the token
     const fetchData = async () => {
       try {
         const response = await axios.get('https://your-api-url/userinfo', {
           headers: { Authorization: `Bearer ${authToken}` },
         });
-        setUserData(response.data);  // Pre-fill the form with existing data
+        setUserData(response.data);  
       } catch (error) {
         console.error(error);
         Alert.alert('Error', 'Failed to fetch user data');
@@ -60,7 +59,6 @@ const ApplicationEdit = () => {
         onChangeText={(text) => setUserData({ ...userData, middlename: text })}
         placeholder="Middle Name"
       />
-      {/* Add similar inputs for other fields */}
 
       <TouchableOpacity style={styles.button} onPress={handleEditSave}>
         <Text style={styles.buttonText}>Save Changes</Text>

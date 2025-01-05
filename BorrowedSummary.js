@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function BorrowedSummary() {
   const route = useRoute();
-  const { selectedDay } = route.params || {}; // Ensure we use selectedDay from route params
+  const { selectedDay } = route.params || {}; 
   const navigation = useNavigation();
   const [isChecked, setIsChecked] = useState(false);
   const [repaymentDate, setRepaymentDate] = useState('');
@@ -37,24 +37,21 @@ export default function BorrowedSummary() {
           const moneyReceived = parseFloat(response.data.moneyrecieved) || 0;
           setBorrowedAmount(moneyReceived);
 
-          // Calculate processing and service fees using selectedDay from route params
           const processing = moneyReceived * 0.0399;
-          const service = moneyReceived * 0.0043 * (selectedDay ? parseInt(selectedDay) : 15); // Use selectedDay passed via route params
+          const service = moneyReceived * 0.0043 * (selectedDay ? parseInt(selectedDay) : 15); 
           const total = moneyReceived + processing + service;
 
           setProcessingFee(processing);
           setServiceFee(service);
 
-          // Ensure totalPayment is a valid number
           if (!isNaN(total)) {
             setTotalPayment(total);
           } else {
             setTotalPayment(0);
           }
 
-          // Calculate repayment date based on selectedDay
           const today = new Date();
-          today.setDate(today.getDate() + (selectedDay ? parseInt(selectedDay) : 15)); // Use selectedDay passed via route params
+          today.setDate(today.getDate() + (selectedDay ? parseInt(selectedDay) : 15)); 
           setRepaymentDate(today.toLocaleDateString());
         } else {
           Alert.alert('Error', 'Failed to retrieve the borrowed information');
@@ -66,7 +63,7 @@ export default function BorrowedSummary() {
     };
 
     fetchData();
-  }, [selectedDay]); // Re-run the effect if selectedDay changes
+  }, [selectedDay]); 
 
   const totalPaymentFormatted = totalPayment && !isNaN(totalPayment) ? totalPayment.toFixed(2) : '0.00';
 
