@@ -9,6 +9,7 @@ import Agreement from './Agreement';
 import Panel from './Panel';
 import Personal from './Personal';
 import Application from './Application';
+import ApplicationEdit from './ApplicationEdit';
 import CF from './CF';
 import ReviewForm from './ReviewForm';
 import CA from './CA';
@@ -41,6 +42,7 @@ export default function App() {
         <Stack.Screen name="Panel" component={Panel} />
         <Stack.Screen name="Personal" component={Personal} />
         <Stack.Screen name="Application" component={Application} />
+        <Stack.Screen name="ApplicationEdit" component={ApplicationEdit} />
         <Stack.Screen name="CF" component={CF} />
         <Stack.Screen name="ReviewForm" component={ReviewForm} />
         <Stack.Screen name="CA" component={CA} />

@@ -2,6 +2,18 @@
   "expo": {
     "name": "LMS",
     "slug": "LMS",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "icon": "./icon.jpg",
+    "splash": {
+      "resizeMode": "cover",
+      "backgroundColor": "#FFFFFF"
+    },
+    
+
+    "extra": {
+      "eas": {
+        "projectId": "7c5b504e-c8ca-454d-a7fe-e9d641ba9961"
+      }
+    }
   }
 }

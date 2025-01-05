@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const ApplicationEdit = () => {
@@ -12,7 +13,7 @@ const ApplicationEdit = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://your-api-url/userinfo', {
+        const response = await axios.get('https://lmsdb-lmserver.up.railway.app/userinfo', {
           headers: { Authorization: `Bearer ${authToken}` },
         });
         setUserData(response.data);  
@@ -27,7 +28,7 @@ const ApplicationEdit = () => {
 
   const handleEditSave = async () => {
     try {
-      const response = await axios.put('https://your-api-url/userinfo', { ...userData, token: authToken }, {
+      const response = await axios.put('https://lmsdb-lmserver.up.railway.app/userinfo', { ...userData, token: authToken }, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
 

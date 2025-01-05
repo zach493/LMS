@@ -56,11 +56,19 @@ const Application = () => {
     } catch (error) {
       if (error.response && error.response.status === 400) {
         Alert.alert(
-          'Form Exists',
-          'A form has already been created. Do you want to edit it or continue?',
+          'Form Saved',
+          'Double Check The Form Or Continue?',
           [
             { text: 'Edit', onPress: () => navigation.navigate('Application') },
-            { text: 'Continue', onPress: () => navigation.navigate('Congratulations') }
+            { text: 'Continue', onPress: () => navigation.navigate('ReviewForm') }
+          ]
+        );
+      } 
+      else if (error.response && error.response.status === 409) {
+        Alert.alert(
+          'You Already Have A Borrowed Record Please Repay It First',
+          [
+            { text: 'Return', onPress: () => navigation.navigate('Panel') },
           ]
         );
       } else {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity,Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
@@ -25,8 +25,11 @@ const Instruction = () => {
       try {
         const token = await AsyncStorage.getItem('authToken'); 
         if (token) {
+          console.log('Token retrieved:', token);
           axios.get('https://lmsdb-lmserver.up.railway.app/paymentinfo', {
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 
+              'Authorization': `Bearer ${token}` 
+            }
           })
           .then(response => {
             if (response.data.message === 'Nothing to pay') {
@@ -48,8 +51,34 @@ const Instruction = () => {
     };
 
     getToken();
-
   }, []);
+
+  const markPaymentAsPaid = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      if (token) {
+        const response = await axios.put('https://lmsdb-lmserver.up.railway.app/markpayment', {
+          token: token, 
+          paidorno: 'Paid' 
+        }, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 200) {
+          console.log('Payment marked as paid successfully');
+          navigation.navigate('Panel');
+        } else {
+          console.error('Failed to mark payment as paid');
+        }
+      } else {
+        console.log('Token not found');
+      }
+    } catch (error) {
+      console.error('Error marking payment as paid:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -88,7 +117,7 @@ const Instruction = () => {
         </Text>
       </View>
 
-      <TouchableOpacity style={styles.secondaryButton}>
+      <TouchableOpacity style={styles.secondaryButton} onPress={markPaymentAsPaid}>
         <Text style={styles.buttonText}>Mark Payment as Sent</Text>
       </TouchableOpacity>
     </View>

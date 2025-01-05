@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Panel = () => {
   const navigation = useNavigation();
+  const [borrowingHistory, setBorrowingHistory] = useState(null);
 
   const handleLogout = async () => {
     try {
@@ -17,6 +18,33 @@ const Panel = () => {
     }
   };
 
+  const fetchBorrowingHistory = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      const response = await fetch(`https://lmsdb-lmserver.up.railway.app/historypanel`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch borrowing history');
+      }
+
+      const data = await response.json();
+      setBorrowingHistory(data);
+    } catch (error) {
+
+
+    }
+  };
+
+  useEffect(() => {
+    fetchBorrowingHistory();
+  }, []);
+
+
   return (
     <View style={styles.container}>
      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -24,24 +52,34 @@ const Panel = () => {
           </TouchableOpacity>
       <Text style={styles.header}>LMS</Text>
 
-      <View style={styles.row}>
-        <View>
-          <Text style={styles.boldText}>To pay on January 26, 2025</Text>
-          <Text style={styles.label}>
-            Total Service Fee: <Text style={styles.value}>26.2% (PHP 393.00)</Text>
-          </Text>
-          <Text style={styles.label}>
-            Repayment Date: <Text style={styles.value}>January 26, 2025</Text>
-          </Text>
-        </View>
 
-        <TouchableOpacity
-          style={styles.buttonLarge}
-          onPress={() => navigation.navigate('Pay')}
-        >
-          <Text style={styles.buttonText}>Make a Payment</Text>
-        </TouchableOpacity>
-      </View>
+
+      {borrowingHistory ? (
+        borrowingHistory.map((item, index) => (
+          <View key={index} style={styles.row}>
+            <View>
+              <Text style={styles.boldText}>To pay on {item.deadline}</Text>
+              <Text style={styles.label}>
+                Total Service Fee: <Text style={styles.value}>{item.moneytopay} (PHP {item.moneyrecieved})</Text>
+              </Text>
+              <Text style={styles.label}>
+                Repayment Date: <Text style={styles.value}>{item.deadline}</Text>
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.buttonLarge}
+              onPress={() => navigation.navigate('Pay')}
+            >
+              <Text style={styles.buttonText}>Make a Payment</Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      ) : (
+        <Text>No borrowing history found.</Text>
+      )}
+
+
+      
       <View style={styles.card}>
         <View style={styles.cardContent}>
           <View>
